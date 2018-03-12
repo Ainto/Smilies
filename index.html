@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>示例</title>
+</head>
+<style>
+    #SmiliesBox {
+        position: absolute;
+        top: 320px;
+        left: 20px;
+        right: 20px;
+        width: 240px;
+        background: #fff;
+        padding: 10px;
+        box-shadow: 2px 2px 3px 3px #b6b6b6;
+        border-radius: 6px;
+    }
+    #SmiliesBox .emotion:hover {
+        box-shadow: inset 1px 1px 20px 8px #4b4b4b;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    textarea {
+        display: block;
+        width: 90%;
+        height: 120px;
+        margin: 0 auto;
+        padding: 10px 20px;
+        border: 1px solid #cacaca;
+        outline: none;
+        position: relative;
+    }
+    #jiexi {
+        margin-right: 55px;
+        float: right;
+    }
+</style>
+
+<body>
+    <textarea name="" id="hhh" cols="30" rows="10"></textarea>
+    <input type="button" value="解析表情" id="jiexi">
+    <div id="show"></div>
+    <div id="SmiliesBox"></div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    //借鉴TGeditor
+    //添加addEventlistener事件
+    var addEvent = function (element, type, handler, useCapture) {
+        if (element.addEventListener) {
+            element.addEventListener(type, handler, useCapture ? true : false);
+        } else if (element.attachEvent) {
+            element.attachEvent('on' + type, handler);
+        } else if (element != window) {
+            element['on' + type] = handler;
+        }
+    };
+    //表情列表
+    var list_smilies = ['smile', 'smiley', 'yum', 'relieved', 'blush', 'anguished', 'worried', 'sweat',
+        'unamused', 'sweat_smile', 'sunglasses', 'wink', 'relaxed', 'scream', 'pensive',
+        'persevere', 'mask', 'no_mouth', 'kissing_closed_eyes', 'kissing_heart', 'hushed',
+        'heart_eyes', 'grin', 'frowning', 'flushed', 'fearful', 'dizzy_face', 'disappointed_relieved',
+        'cry', 'confounded', 'cold_sweat', 'angry', 'anguished', 'broken_heart', 'beetle', 'good', 'no', 'beer',
+        'beers', 'birthday', 'bow', 'bomb', 'coffee', 'cocktail', 'gun', 'metal', 'moon'
+    ];
+    //加载表情
+    var html = '';
+    list_smilies.forEach(function (v) {
+        html += '<img src="emotion/emoji/' + v + '.png" class="emotion" width="30" height="30" alt="' + v +'">';
+    });
+    document.getElementById("SmiliesBox").innerHTML = html;
+
+    //事件监听
+    var emotion = document.querySelectorAll('.emotion');
+    emotion.forEach(function (e) {
+        addEvent(e, 'click', add, false);
+    });
+
+    //事件
+    function add() {
+        //var tx=document.getElementById("ooo");
+        //var img = '<img src="' + this.src + '" class="emotion" width="20" height="20" alt="" />';
+        //https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand
+        //console.log(document.execCommand('insertHTML', true, img));
+        var img = this.alt;
+        $("#hhh").val($("#hhh").val() + '[' + img + ']');
+    };
+
+    //解析表情
+    $("#jiexi").click(function () {
+        var e = $("#hhh").val();
+        out(e);
+    });
+
+    function out(s) {
+        var sArr = s.match(/\[.*?\]/g);
+        for (var i = 0; i < sArr.length; i++) {
+            var reStr = sArr[i].replace('[', '<img src="emotion/emoji/');
+            reStr = reStr.replace(']', '.png" width="25" height="25">');
+            s = s.replace(sArr[i], reStr);
+        }
+        $("#show").html(s);
+    }
+</script>
+</html>
